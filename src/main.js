@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import App from './App.vue'
 import store from './store'
-import './registerServiceWorker'
+// 暂时关闭PWA
+// import './registerServiceWorker'
 
-Vue.config.productionTip = false
+Vue.config.productionTip = process.env.NODE_ENV !== 'production'
 
 new Vue({
   store,
