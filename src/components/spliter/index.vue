@@ -36,11 +36,13 @@ export default {
     }
   },
   computed: {
+    // 左栏目的宽度百分比
     leftStyle() {
       return {
         'width': this.rate * 100 + '%'
       }
     },
+    // 右栏目的宽度百分比
     rightStyle() {
       const boxWidth = this.getBoxWidth()
       const leftWidth = this.rate * boxWidth
@@ -52,19 +54,23 @@ export default {
     }
   },
   mounted() {
+    // 初始化两边均分
     const boxWidth = this.getBoxWidth()
     this.oldRate = this.rate = (boxWidth - 20) / 2 / boxWidth
   },
   methods: {
+    // 获取整个spliter的宽度
     getBoxWidth() {
       const box = this.$refs.box
       return box ? box.clientWidth : 1
     },
+    // 计算某个偏移量的情况下，比例应该是多少
     handleOffset(offset) {
       const boxWidth = this.getBoxWidth()
       const rate = this.oldRate + offset / boxWidth
       this.rate = Math.max(0.15, Math.min(0.85, rate))
     },
+    // 移动时，按照事件类型对应鼠标或者触摸的偏移量
     handleMove(e) {
       if (e instanceof MouseEvent) {
         const offset = e.pageX - this.downX
@@ -75,16 +81,20 @@ export default {
         this.handleOffset(offset)
       }
     },
+    // 取消监听事件
     handleUp() {
       off('touchmove', this.handleMove)
       off('touchend', this.handleUp)
       off('mousemove', this.handleMove)
       off('mouseup', this.handleUp)
     },
+    // 按下时
     handleDown(e) {
+      // 重新获取宽度计算左栏百分比，防止缩放时重算异常
       const leftWidth = this.$refs.left.clientWidth
       const boxWidth = this.getBoxWidth()
       this.oldRate = leftWidth / boxWidth
+      // 按照事件类型对应鼠标或者触摸的事件监听
       if (e instanceof MouseEvent) {
         this.downX = e.pageX
         on('mousemove', this.handleMove)
@@ -105,9 +115,12 @@ export default {
   display: flex;
   overflow: hidden;
   width: 100%;
+  height: 100%;
 }
 .ld-spliter-panel {
+  height: 100%;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 .ld-spliter-panel.right {
   flex-grow: 1;

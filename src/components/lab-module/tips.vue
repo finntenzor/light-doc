@@ -16,3 +16,9 @@ export default {
 }
 </script>
 
+<style>
+.lab-module-tips-list > li {
+  margin-left: 1em;
+  list-style: decimal;
+}
+</style>
