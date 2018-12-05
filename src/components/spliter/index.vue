@@ -4,7 +4,7 @@
       <slot name="left"></slot>
     </div>
     <div class="ld-spliter-slider" @mousedown="handleDown"></div>
-    <div class="ld-spliter-panel right">
+    <div class="ld-spliter-panel right" :style="rightStyle">
       <slot name="right"></slot>
     </div>
   </div>
@@ -38,6 +38,15 @@ export default {
       return {
         'width': this.rate * 100 + '%'
       }
+    },
+    rightStyle() {
+      const boxWidth = this.getBoxWidth()
+      const leftWidth = this.rate * boxWidth
+      const rightWidth = boxWidth - 20 - leftWidth
+      const rate = rightWidth / boxWidth
+      return {
+        'width': rate * 100 + '%'
+      }
     }
   },
   mounted() {
@@ -46,7 +55,8 @@ export default {
   },
   methods: {
     getBoxWidth() {
-      return this.$refs.box.clientWidth
+      const box = this.$refs.box
+      return box ? box.clientWidth : 1
     },
     handleMove(e) {
       const offset = e.pageX - this.downX
@@ -74,6 +84,7 @@ export default {
 .ld-spliter {
   display: flex;
   overflow: hidden;
+  width: 100%;
 }
 .ld-spliter-panel.right {
   flex-grow: 1;
