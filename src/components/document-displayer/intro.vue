@@ -29,6 +29,9 @@ export default {
 </script>
 
 <style>
+.document-intro {
+  margin: 20px 0;
+}
 .document-intro-title {
   font-size: 2.2em;
 }

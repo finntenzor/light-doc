@@ -8,7 +8,7 @@
       @select="handleSelect">
       <!-- 各版本的文档 -->
       <el-submenu
-        v-for="(doc, i) in docs"
+        v-for="(doc, i) in documents"
         :key="i"
         :index="doc.version">
         <template slot="title">
@@ -40,7 +40,7 @@ function minus(a, b) {
 export default {
   name: 'LdSideNav',
   props: {
-    docs: {
+    documents: {
       type: Array,
       required: true
     },
@@ -59,7 +59,8 @@ export default {
         const path = [doc, group, api]
         this.$emit('select', path)
       } else {
-        console.warn('Can\'t resolve path: ', keyPath) // eslint-disable-line
+        throw new Error('路径解析错误')
+        console.warn('Document not found: ', keyPath) // eslint-disable-line
       }
     }
   }

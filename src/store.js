@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import sender from '@/util/sender'
 import { simpleMethods, complexMethods, typeConfig } from '@/consts'
 import { generateTypeTextMap, generateTypeClassNameMap } from '@/util/types'
+import docs from './fake-doc'
 
 Vue.use(Vuex)
 
@@ -12,6 +13,8 @@ function canMethodHasData(method) {
 
 const store = new Vuex.Store({
   state: {
+    documents: docs,
+    currentDocument: docs[0],
     request: {
       title: '(unknown)',
       url: '',
@@ -24,6 +27,8 @@ const store = new Vuex.Store({
     toClassNameMap: generateTypeClassNameMap(typeConfig)
   },
   getters: {
+    documents: state => state.documents,
+    currentDocument: state => state.currentDocument,
     results: state => state.results,
     requestTitle: state => state.request.title,
     requestUrl: state => state.request.url,
@@ -85,16 +90,35 @@ const store = new Vuex.Store({
         const index = state.activeNames.indexOf(first.id)
         state.activeNames.splice(index, 1)
       }
+      const id = state.results.length
       state.results.unshift({
-        id: state.results.length,
+        id,
         title,
         type,
         response
       })
+      state.activeNames.push(id)
     },
 
     setActiveNames(state, activeNames) {
       state.activeNames = activeNames
+    },
+
+    /**
+     * 切换到目标版本的文档
+     */
+    switchDocument(state, version) {
+      // 已经在目标版本则什么都不做
+      if (state.currentDocument && state.currentDocument.version === version) {
+        return
+      }
+      const targetDocument = state.documents.find(doc => doc.version === version)
+      if (targetDocument) {
+        state.currentDocument = targetDocument
+      } else {
+        throw new Error('未找到文档')
+        console.warn('Document not found: ', version) // eslint-disable-line
+      }
     }
   },
   actions: {

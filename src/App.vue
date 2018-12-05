@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <side-nav :docs="[doc.data]" :collapse="!sideNavActive"></side-nav>
+    <side-nav :documents="documents" :collapse="!sideNavActive" @select="handleSelect"></side-nav>
     <section class="app-container">
       <header class="app-header">
         <div class="app-header-container">
@@ -20,8 +20,7 @@
           <ld-spliter class="app-main-spliter">
             <!-- 文档区 -->
             <div slot="left">
-              <document-intro :intro="doc.data.intro"></document-intro>
-              <document-api :api="doc.data.groups.UserAndAuth.apis.register"></document-api>
+              <document-displayer ref="documentDisplayer" :document="currentDocument"></document-displayer>
             </div>
             <!-- 测试区 -->
             <div slot="right">
@@ -35,13 +34,12 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from 'vuex'
+import { sendWrapper } from '@/store'
 import LdSpliter from './components/spliter'
 import LabModule from './components/lab-module'
 import SideNav from './components/side-nav'
-import { sendWrapper } from '@/store'
-import doc from './fake-doc'
-import DocumentIntro from './components/document-displayer/intro'
-import DocumentApi from './components/document-displayer/api'
+import DocumentDisplayer from './components/document-displayer'
 
 export default {
   name: 'App',
@@ -49,27 +47,49 @@ export default {
     LdSpliter,
     LabModule,
     SideNav,
-    DocumentIntro,
-    DocumentApi
+    DocumentDisplayer
   },
   data() {
     return {
-      doc,
       sideNavActive: true
     }
   },
   mounted() {
     this.exportSendToWindow()
   },
+  computed: {
+    ...mapGetters({
+      documents: 'documents',
+      currentDocument: 'currentDocument'
+    })
+  },
   methods: {
+    ...mapMutations({
+      switchDocument: 'switchDocument'
+    }),
     /**
      * 将发送请求功能暴露至window
      */
     exportSendToWindow() {
       window.send = sendWrapper
     },
+    /**
+     * 切换侧边菜单栏展开情况
+     */
     handleSwitchActive() {
       this.sideNavActive = !this.sideNavActive
+    },
+    /**
+     * 处理选中了某个API
+     */
+    handleSelect(path) {
+      const [version] = path // 获取版本
+      try {
+        this.switchDocument(version) // 尝试切换到目标版本的文档
+        this.$refs.documentDisplayer.attach(path)
+      } catch (error) {
+        this.$message.error(error.message + '，请查看控制台获取更多信息')
+      }
     }
   }
 }
