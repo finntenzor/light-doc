@@ -63,12 +63,17 @@ const store = new Vuex.Store({
     },
     setRequestUrl(state, payload) {
       state.request.url = payload
+      this.commit('clearRequestTitle')
     },
     setRequestMethod(state, payload) {
       state.request.method = payload
+      this.commit('clearRequestTitle')
     },
     setRequestBody(state, payload) {
       state.request.body = payload
+    },
+    clearRequestTitle(state) {
+      this.commit('setRequestTitle', '(unknown)')
     },
 
     /**
@@ -104,7 +109,6 @@ const store = new Vuex.Store({
           title: getters.requestTitle,
           response
         })
-        commit('setRequestTitle', '(unknown)')
         return response
       } catch (error) {
         commit('addResult', {
@@ -112,7 +116,6 @@ const store = new Vuex.Store({
           title: getters.requestTitle,
           response: error.response
         })
-        commit('setRequestTitle', '(unknown)')
         throw error
       }
     }

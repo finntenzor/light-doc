@@ -10,3 +10,24 @@
     background-color: #f56c6c;
   }
 }
+
+@mixin method-styles {
+  // 在这里可以调整不同请求方法显示的颜色
+  &.get {
+    background-color: #67c23a;
+  }
+  &.post {
+    background-color: #409eff;
+  }
+  &.put,
+  &.patch {
+    background-color: #e6a23c;
+  }
+  &.delete {
+    background-color: #f56c6c;
+  }
+  &.head,
+  &.options {
+    background-color: #909399;
+  }
+}
