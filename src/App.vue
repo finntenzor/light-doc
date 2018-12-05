@@ -20,7 +20,8 @@
           <ld-spliter class="app-main-spliter">
             <!-- 文档区 -->
             <div slot="left">
-              <p>Left</p>
+              <document-intro :intro="doc.data.intro"></document-intro>
+              <document-api :api="doc.data.groups.UserAndAuth.apis.register"></document-api>
             </div>
             <!-- 测试区 -->
             <div slot="right">
@@ -39,13 +40,17 @@ import LabModule from './components/lab-module'
 import SideNav from './components/side-nav'
 import { sendWrapper } from '@/store'
 import doc from './fake-doc'
+import DocumentIntro from './components/document-displayer/intro'
+import DocumentApi from './components/document-displayer/api'
 
 export default {
   name: 'App',
   components: {
     LdSpliter,
     LabModule,
-    SideNav
+    SideNav,
+    DocumentIntro,
+    DocumentApi
   },
   data() {
     return {
@@ -77,13 +82,11 @@ export default {
   list-style: none;
 }
 #app {
+  font-size: 0.85em;
   width: 100vw;
   height: 100vh;
   display: flex;
-  // font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  // -webkit-font-smoothing: antialiased;
-  // -moz-osx-font-smoothing: grayscale;
-  // color: #2c3e50;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   .app-container {
     flex: 1 0;
     display: flex;
