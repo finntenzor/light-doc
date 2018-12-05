@@ -59,8 +59,10 @@ export default {
       off('mouseup', this.handleUp)
     },
     handleDown(e) {
+      const leftWidth = this.$refs.left.clientWidth
+      const boxWidth = this.getBoxWidth()
       this.downX = e.pageX
-      this.oldRate = this.rate
+      this.oldRate = leftWidth / boxWidth
       on('mousemove', this.handleMove)
       on('mouseup', this.handleUp)
     }
