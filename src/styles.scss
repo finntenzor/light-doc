@@ -1,0 +1,12 @@
+@mixin type-styles {
+  // 在这里可以调整不同类型结果显示的颜色
+  &.success {
+    background-color: #67c23a;
+  }
+  &.api-exception {
+    background-color: #e6a23c;
+  }
+  &.network-error {
+    background-color: #f56c6c;
+  }
+}
