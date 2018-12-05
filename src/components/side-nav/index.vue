@@ -1,6 +1,7 @@
 <template>
-  <aside class="side-nav">
+  <aside class="side-nav" :class="{ 'collapse' : collapse }">
     <el-menu
+      :collapse="collapse"
       background-color="#545c64"
       text-color="#fff"
       active-text-color="#ffd04b"
@@ -42,11 +43,10 @@ export default {
     docs: {
       type: Array,
       required: true
-    }
-  },
-  data() {
-    return {
-      isCollapse: false
+    },
+    collapse: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
@@ -66,12 +66,16 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .side-nav {
   background: #545c64;
-  min-width: 200px;
   height: 100vh;
   overflow-y: auto;
+  width: 64px;
+  transition: width 0.4s;
+  &:not(.collapse) {
+    width: 200px;
+  }
 }
 .side-nav .el-menu {
   border-right: none;

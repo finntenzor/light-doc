@@ -1,9 +1,15 @@
 <template>
   <div id="app">
-    <side-nav :docs="[doc.data]"></side-nav>
+    <side-nav :docs="[doc.data]" :collapse="!sideNavActive"></side-nav>
     <section class="app-container">
       <header class="app-header">
-        <div class="app-header-container"></div>
+        <div class="app-header-container">
+          <img
+            class="app-header-more"
+            :class="{ 'active' : sideNavActive }"
+            src="@/assets/more.svg"
+            @click="handleSwitchActive()">
+        </div>
         <div class="app-header-logo-container">
           <img class="app-header-logo" src="@/assets/logo.svg" alt="">
         </div>
@@ -43,7 +49,8 @@ export default {
   },
   data() {
     return {
-      doc
+      doc,
+      sideNavActive: true
     }
   },
   mounted() {
@@ -55,6 +62,9 @@ export default {
      */
     exportSendToWindow() {
       window.send = sendWrapper
+    },
+    handleSwitchActive() {
+      this.sideNavActive = !this.sideNavActive
     }
   }
 }
@@ -93,6 +103,15 @@ export default {
     margin: 8px 0;
     height: 32px;
     text-align: center;
+  }
+  .app-header-more {
+    margin: 8px;
+    width: 32px;
+    height: 32px;
+    transition: transform 0.4s;
+    &.active {
+      transform: rotate(90deg);
+    }
   }
   .app-header-logo {
     width: 32px;
