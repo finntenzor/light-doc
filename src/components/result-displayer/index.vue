@@ -27,11 +27,11 @@
 </template>
 
 <script>
-import { toText, toClassName } from './config'
+import { mapGetters } from 'vuex'
 import CodeBox from '@/components/code-box'
 
 export default {
-  name: 'ResultDisplayer',
+  name: 'LdResultDisplayer',
   components: {
     CodeBox
   },
@@ -52,11 +52,15 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      typeToText: 'typeToText',
+      typeToClassName: 'typeToClassName'
+    }),
     typeText() {
-      return toText(this.type)
+      return this.typeToText(this.type)
     },
     typeClassName() {
-      return toClassName(this.type)
+      return this.typeToClassName(this.type)
     }
   }
 }

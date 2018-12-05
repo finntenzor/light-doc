@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: 'CodeBox',
+  name: 'LdCodeBox',
   props: {
     code: {
       type: [String, Object, Array, Boolean, Number],

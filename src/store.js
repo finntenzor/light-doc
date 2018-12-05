@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import sender from '@/util/sender'
-import { simpleMethods, complexMethods } from '@/consts'
+import { simpleMethods, complexMethods, typeConfig } from '@/consts'
+import { generateTypeTextMap, generateTypeClassNameMap } from '@/util/types'
 
 Vue.use(Vuex)
 
@@ -12,14 +13,19 @@ function canMethodHasData(method) {
 const store = new Vuex.Store({
   state: {
     request: {
+      title: '(unknown)',
       url: '',
       method: '',
       body: ''
     },
-    results: []
+    results: [],
+    activeNames: [],
+    toTextMap: generateTypeTextMap(typeConfig),
+    toClassNameMap: generateTypeClassNameMap(typeConfig)
   },
   getters: {
     results: state => state.results,
+    requestTitle: state => state.request.title,
     requestUrl: state => state.request.url,
     requestMethod: state => state.request.method,
     requestBody: state => state.request.body,
@@ -46,9 +52,15 @@ const store = new Vuex.Store({
           data: getters.requestData
         }
       }
-    }
+    },
+    activeNames: state => state.activeNames,
+    typeToText: state => name => state.toTextMap[name] || '未知结果',
+    typeToClassName: state => name => state.toClassNameMap[name] || 'unknown'
   },
   mutations: {
+    setRequestTitle(state, payload) {
+      state.request.title = payload
+    },
     setRequestUrl(state, payload) {
       state.request.url = payload
     },
@@ -58,39 +70,49 @@ const store = new Vuex.Store({
     setRequestBody(state, payload) {
       state.request.body = payload
     },
+
     /**
-     * 添加成功请求结果
+     * 添加请求结果
      */
-    addSuccessResult(state, response) {
+    addResult(state, { type, response, title }) {
+      const first = state.results[0]
+      if (first) {
+        const index = state.activeNames.indexOf(first.id)
+        state.activeNames.splice(index, 1)
+      }
       state.results.unshift({
         id: state.results.length,
-        type: 'Success',
+        title,
+        type,
         response
       })
     },
 
-    /**
-     * 添加失败请求结果
-     */
-    addErrorResult(state, error) {
-      state.results.unshift({
-        id: state.results.length,
-        type: error.type,
-        response: error.response
-      })
+    setActiveNames(state, activeNames) {
+      state.activeNames = activeNames
     }
   },
   actions: {
     /**
      * 发送请求
      */
-    async send({ commit }, config) {
+    async send({ commit, getters }, config) {
       try {
         const response = await sender(config)
-        commit('addSuccessResult', response)
+        commit('addResult', {
+          type: 'Success',
+          title: getters.requestTitle,
+          response
+        })
+        commit('setRequestTitle', '(unknown)')
         return response
       } catch (error) {
-        commit('addErrorResult', error)
+        commit('addResult', {
+          type: error.type,
+          title: getters.requestTitle,
+          response: error.response
+        })
+        commit('setRequestTitle', '(unknown)')
         throw error
       }
     }

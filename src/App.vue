@@ -5,7 +5,7 @@
         <p>Left</p>
       </div>
       <div slot="right">
-        <request-sender></request-sender>
+        <lab-module></lab-module>
       </div>
     </ld-spliter>
   </div>
@@ -13,14 +13,14 @@
 
 <script>
 import LdSpliter from './components/spliter'
-import RequestSender from './components/request-sender'
+import LabModule from './components/lab-module'
 import { sendWrapper } from '@/store'
 
 export default {
   name: 'App',
   components: {
     LdSpliter,
-    RequestSender
+    LabModule
   },
   mounted() {
     this.exportSendToWindow()
@@ -37,11 +37,17 @@ export default {
 </script>
 
 <style lang="scss">
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  width: 100vw;
+  height: 100vh;
+  // font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  // -webkit-font-smoothing: antialiased;
+  // -moz-osx-font-smoothing: grayscale;
+  // color: #2c3e50;
 }
 </style>
