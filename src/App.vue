@@ -14,7 +14,8 @@
 <script>
 import LdSpliter from './components/spliter'
 import RequestSender from './components/request-sender'
-import { simpleMethods, complexMethods } from '@/consts'
+import { sendWrapper } from '@/store'
+
 export default {
   name: 'App',
   components: {
@@ -29,27 +30,7 @@ export default {
      * 将发送请求功能暴露至window
      */
     exportSendToWindow() {
-      const send = config => this.$store.dispatch('send', config)
-      simpleMethods.forEach(method => {
-        send[method] = function(url, config = {}) {
-          return send({
-            ...config,
-            method,
-            url
-          })
-        }
-      })
-      complexMethods.forEach(method => {
-        send[method] = function(url, data, config = {}) {
-          return send({
-            ...config,
-            method,
-            url,
-            data
-          })
-        }
-      })
-      window.send = send
+      window.send = sendWrapper
     }
   }
 }

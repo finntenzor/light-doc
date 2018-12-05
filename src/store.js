@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import sender from '@/util/sender'
-import { complexMethods } from '@/consts'
+import { simpleMethods, complexMethods } from '@/consts'
 
 Vue.use(Vuex)
 
@@ -9,7 +9,7 @@ function canMethodHasData(method) {
   return complexMethods.indexOf(method) !== -1
 }
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
     request: {
       url: '',
@@ -96,3 +96,31 @@ export default new Vuex.Store({
     }
   }
 })
+
+function buildSendWrapper(store) {
+  const send = config => store.dispatch('send', config)
+  simpleMethods.forEach(method => {
+    send[method] = function(url, config = {}) {
+      return send({
+        ...config,
+        method,
+        url
+      })
+    }
+  })
+  complexMethods.forEach(method => {
+    send[method] = function(url, data, config = {}) {
+      return send({
+        ...config,
+        method,
+        url,
+        data
+      })
+    }
+  })
+  return send
+}
+
+export const sendWrapper = buildSendWrapper(store)
+
+export default store
