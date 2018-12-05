@@ -20,7 +20,18 @@
           <ld-spliter class="app-main-spliter">
             <!-- 文档区 -->
             <div slot="left">
-              <document-displayer ref="documentDisplayer" :document="currentDocument"></document-displayer>
+              <div v-if="loading === true">
+                <span>文档加载中，请稍后</span>
+              </div>
+              <document-displayer
+                v-else-if="loading === false"
+                ref="documentDisplayer"
+                :document="currentDocument"></document-displayer>
+              <div v-else>
+                <span>文档加载出错，请检查网络状态后刷新重试</span>
+                <!-- 此时loading为错误 -->
+                <pre>{{ loading }}</pre>
+              </div>
             </div>
             <!-- 测试区 -->
             <div slot="right">
@@ -34,7 +45,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { sendWrapper } from '@/store'
 import LdSpliter from './components/spliter'
 import LabModule from './components/lab-module'
@@ -56,9 +67,11 @@ export default {
   },
   mounted() {
     this.exportSendToWindow()
+    this.getDocuments()
   },
   computed: {
     ...mapGetters({
+      loading: 'loading',
       documents: 'documents',
       currentDocument: 'currentDocument'
     })
@@ -66,6 +79,9 @@ export default {
   methods: {
     ...mapMutations({
       switchDocument: 'switchDocument'
+    }),
+    ...mapActions({
+      getDocuments: 'getDocuments'
     }),
     /**
      * 将发送请求功能暴露至window

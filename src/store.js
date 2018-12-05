@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import sender from '@/util/sender'
+import request from '@/util/request'
 import { simpleMethods, complexMethods, typeConfig } from '@/consts'
 import { generateTypeTextMap, generateTypeClassNameMap } from '@/util/types'
-import docs from './fake-doc'
 
 Vue.use(Vuex)
 
@@ -13,8 +13,9 @@ function canMethodHasData(method) {
 
 const store = new Vuex.Store({
   state: {
-    documents: docs,
-    currentDocument: docs[0],
+    loading: true,
+    documents: [],
+    currentDocument: null,
     request: {
       title: '(unknown)',
       url: '',
@@ -27,6 +28,7 @@ const store = new Vuex.Store({
     toClassNameMap: generateTypeClassNameMap(typeConfig)
   },
   getters: {
+    loading: state => state.loading,
     documents: state => state.documents,
     currentDocument: state => state.currentDocument,
     results: state => state.results,
@@ -63,6 +65,9 @@ const store = new Vuex.Store({
     typeToClassName: state => name => state.toClassNameMap[name] || 'unknown'
   },
   mutations: {
+    setLoading(state, payload) {
+      state.loading = payload
+    },
     setRequestTitle(state, payload) {
       state.request.title = payload
     },
@@ -119,9 +124,25 @@ const store = new Vuex.Store({
         throw new Error('未找到文档')
         console.warn('Document not found: ', version) // eslint-disable-line
       }
+    },
+
+    setDocuments(state, payload) {
+      state.documents = payload
+      state.currentDocument = payload[0] || null
     }
   },
   actions: {
+    async getDocuments({ commit }) {
+      try {
+        const versions = await request.get('./docs')
+        const promises = versions.map(version => request.get('./docs/' + version))
+        const documents = await Promise.all(promises)
+        commit('setDocuments', documents)
+        commit('setLoading', false)
+      } catch (err) {
+        commit('setLoading', err)
+      }
+    },
     /**
      * 发送请求
      */

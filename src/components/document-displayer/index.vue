@@ -3,7 +3,7 @@
     <document-intro
       :intro="document.intro"></document-intro>
     <document-group
-      v-for="(group, key) in groups"
+      v-for="(group, key) in document.groups"
       ref="group"
       :key="key"
       :group="group"
@@ -32,17 +32,34 @@ export default {
   },
   computed: {
     valid() {
-      return !!this.document.groups
-    },
-    groups() {
-      return this.document.groups || []
+      try {
+        if (!(this.document.intro instanceof Array)) {
+          return false
+        }
+        for (const groupKey in this.document.groups) {
+          const group = this.document.groups[groupKey]
+          for (const apiKey in group) {
+            const api = group[apiKey]
+            if (!(api.examples instanceof Array)) {
+              return false
+            }
+          }
+        }
+      } catch (err) {
+        console.error(err) // eslint-disable-line
+        return false
+      }
+      return true
     },
     /**
      * 由各个模块和其名字组成的map
      */
     groupMap() {
+      if (!this.valid) {
+        return {}
+      }
       const map = {}
-      this.$refs.group.forEach(item => {
+      this.$refs.groups.forEach(item => {
         const key = item.$vnode.data.key
         map[key] = item
       })
