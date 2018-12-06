@@ -76,8 +76,8 @@ export default {
       if (documentGroup) {
         documentGroup.attach(path)
       } else {
-        throw new Error('Group不存在')
         console.warn('Group not found: ', path) // eslint-disable-line
+        throw new Error('Group不存在')
       }
     }
   }

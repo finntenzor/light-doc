@@ -59,8 +59,8 @@ export default {
         const path = [doc, group, api]
         this.$emit('select', path)
       } else {
-        throw new Error('路径解析错误')
         console.warn('Document not found: ', keyPath) // eslint-disable-line
+        throw new Error('路径解析错误')
       }
     }
   }

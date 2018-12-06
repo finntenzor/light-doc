@@ -121,8 +121,8 @@ const store = new Vuex.Store({
       if (targetDocument) {
         state.currentDocument = targetDocument
       } else {
-        throw new Error('未找到文档')
         console.warn('Document not found: ', version) // eslint-disable-line
+        throw new Error('未找到文档')
       }
     },
 

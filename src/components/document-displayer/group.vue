@@ -76,8 +76,8 @@ export default {
           anchor.scrollIntoView()
         }
       } else {
-        throw new Error('API不存在')
         console.warn('API not found: ', path) // eslint-disable-line
+        throw new Error('API不存在')
       }
     }
   }
