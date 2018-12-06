@@ -33,15 +33,35 @@ export default {
   computed: {
     valid() {
       try {
-        if (!(this.document.intro instanceof Array)) {
+        if (!(this.document.intro)) {
+          console.error('document/intro not exist') // eslint-disable-line
+          return false
+        }
+        if (!(this.document.intro.examples instanceof Array)) {
+          console.error('document/intro/examples is not an array') // eslint-disable-line
+          return false
+        }
+        if (!(this.document.groups)) {
+          console.error('document/groups not exist') // eslint-disable-line
+          return false
+        } else if (!(this.document.groups instanceof Object)) {
+          console.error('document/groups is not an object') // eslint-disable-line
           return false
         }
         for (const groupKey in this.document.groups) {
           const group = this.document.groups[groupKey]
-          for (const apiKey in group) {
-            const api = group[apiKey]
+          if (!(group.apis)) {
+            console.error(`document/groups/${groupKey}/apis not exist`) // eslint-disable-line
+            return false
+          } else if (!(group.apis instanceof Object)) {
+            console.error(`document/groups/${groupKey}/apis is not an object`) // eslint-disable-line
+            return false
+          }
+          for (const apiKey in group.apis) {
+            const api = group.apis[apiKey]
             if (!(api.examples instanceof Array)) {
               return false
+              console.error(`document/groups/${groupKey}/apis/${apiKey}/examples is not an array`) // eslint-disable-line
             }
           }
         }
@@ -59,7 +79,7 @@ export default {
         return {}
       }
       const map = {}
-      this.$refs.groups.forEach(item => {
+      this.$refs.group.forEach(item => {
         const key = item.$vnode.data.key
         map[key] = item
       })

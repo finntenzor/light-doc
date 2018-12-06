@@ -21,7 +21,6 @@
 
 <script>
 import CodeBox from '@/components/code-box'
-import { parseHTML } from 'vue'
 
 export default {
   name: 'LdDocumentApiExample',
@@ -63,9 +62,6 @@ export default {
       const body = this.$refs.body
       return body ? body.getText() : ''
     }
-  },
-  mounted() {
-    window.parseHTML = parseHTML
   }
 }
 </script>
